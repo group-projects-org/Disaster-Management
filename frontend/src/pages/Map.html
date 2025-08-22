@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>India Map Search</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 500px; width: 100%; }
+    body { font-family: Arial, sans-serif; padding: 10px; }
+    input { padding: 5px; margin-right: 10px; }
+    button { padding: 5px; }
+  </style>
+</head>
+<body>
+
+<h2>India Map Search</h2>
+<input type="text" id="locationInput" placeholder="Enter state or city (e.g., Mumbai, Bihar)">
+<button onclick="searchLocation()">Search</button>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize map centered on India
+  var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  var marker;
+
+  // Function to search location using Nominatim
+  function searchLocation() {
+    var query = document.getElementById("locationInput").value;
+    if (!query) return;
+
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}, India`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.length > 0) {
+          var lat = data[0].lat;
+          var lon = data[0].lon;
+
+          if (marker) map.removeLayer(marker);
+          marker = L.marker([lat, lon]).addTo(map)
+            .bindPopup(`<b>${query}</b>`).openPopup();
+
+          map.setView([lat, lon], 8); // zoom to location
+        } else {
+          alert("Location not found!");
+        }
+      })
+      .catch(err => console.error(err));
+  }
+</script>
+
+</body>
+</html>
