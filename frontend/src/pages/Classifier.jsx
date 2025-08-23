@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PredictionForm from "../components/PredictionForm";
 import ResultDisplay from "../components/ResultDisplay";
 import PredictionHistory from "../components/PredictionHistory";
 import './../CSS/Classifier.css';

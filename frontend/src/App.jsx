@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Classifier from "./pages/Classifier";
-import Report from "./pages/Report";
+import Report from "./pages/Reports";
 
 function App() {
   return (
