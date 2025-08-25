@@ -9,7 +9,7 @@ export default function GovtDashboard() {
   const fetchAlerts = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8001/sos");
+      const res = await fetch("http://localhost:8000/sos");
       const data = await res.json();
       console.log("Fetched alerts:", data);
 
