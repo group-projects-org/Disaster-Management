@@ -19,8 +19,8 @@ def clean_series(texts):
     return np.array([clean_text(t) for t in texts])
 
 # Paths
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-MODEL_PATH = BASE_DIR / "ai-ml" / "models" / "disaster_tweet_model.joblib"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent  # disaster-management/
+MODEL_PATH = BASE_DIR / "AI_ML" / "models" / "disaster_tweet_model.joblib"
 
 # Load model
 print(f"Loading model from: {MODEL_PATH}")

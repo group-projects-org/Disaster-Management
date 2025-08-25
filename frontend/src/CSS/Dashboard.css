@@ -1,6 +1,6 @@
 /* Dashboard Container */
 .dashboard-container {
-  padding: 24px;
+  padding: 50px;
   background-color: #f9fafb;
   min-height: 100vh;
   width: 100%;
@@ -27,6 +27,7 @@
   align-items: center;
   gap: 12px;
   margin: 0;
+  font-family: 'Montserrat', 'Poppins', sans-serif;
 }
 
 .title-icon {
@@ -37,6 +38,7 @@
   color: #6b7280;
   margin: 8px 0 0 0;
   font-size: 1rem;
+  font-family: "DM Sans", sans-serif;
 }
 
 .refresh-btn {
@@ -78,9 +80,10 @@
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 24px;
   margin-bottom: 32px;
+  max-width: 1200px; 
 }
 
 .stat-card {

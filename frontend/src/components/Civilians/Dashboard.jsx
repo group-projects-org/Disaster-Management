@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
-import { AlertTriangle, Clock, TrendingUp, MapPin, RefreshCw, Download } from 'lucide-react';
-import './../CSS/Dashboard.css';
+import { AlertTriangle, Clock, TrendingUp, RefreshCw } from 'lucide-react';
+import './../../CSS/Dashboard.css';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   const [stats, setStats] = useState({});
@@ -15,7 +16,7 @@ const Dashboard = () => {
     const fetchReports = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:8000/reports");
+        const res = await fetch(`${BASE_URL}/reports`);
         const data = await res.json();
         setRecentReports(data);
         setTimeData(computeTimeData(data));
@@ -28,25 +29,19 @@ const Dashboard = () => {
         data.forEach(r => {
           const type = r.label_name || "other";
           disasterTypes[type] = (disasterTypes[type] || 0) + 1;
-
           if (r.severity === "high") highSeverity += 1;
           if (r.severity === "critical") criticalAlerts += 1;
-        });
-
-        setStats({
+        }); setStats({
           total_reports: totalReports,
           total_disasters: data.filter(r => r.label_name === "disaster").length,
           high_severity: highSeverity,
           critical_alerts: criticalAlerts,
           by_type: disasterTypes,
           avg_response_time: "N/A"
-        });
-
-        setLastUpdated(new Date());
+        }); setLastUpdated(new Date());
       } catch (err) {
         console.error("Error fetching reports:", err);
-      }
-      setLoading(false);
+      } setLoading(false);
     };
 
     fetchReports();
@@ -142,14 +137,7 @@ const Dashboard = () => {
             </h1>
             <p className="dashboard-subtitle">Real-time disaster monitoring and analytics</p>
           </div>
-          <button
-            onClick={refreshData}
-            className={`refresh-btn ${loading ? 'loading' : ''}`}
-            disabled={loading}
-          >
-            <RefreshCw size={16} className={loading ? 'spin' : ''} />
-            Refresh
-          </button>
+          <button onClick={refreshData} className={`refresh-btn ${loading ? 'loading' : ''}`} disabled={loading}> <RefreshCw size={16} className={loading ? 'spin' : ''} /> Refresh </button>
         </div>
 
         {/* Stats Cards */}

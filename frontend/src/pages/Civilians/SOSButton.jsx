@@ -1,42 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AlertTriangle, MapPin, Phone } from 'lucide-react';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
-const SOSButton = ({ enabled, onSOSActivate, lastReport }) => {
+const SOSButton = ({ enabled, lastReport }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [isAutoSending, setIsAutoSending] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const countdownRef = useRef(null);
 
+  const onSOSActivate = async () => {
+    try {
+      const submitData = new FormData();
+      submitData.append('reporter', lastReport.reporter);
+      submitData.append('text', lastReport.message);
+      submitData.append('latitude', lastReport.latitude);
+      submitData.append('longitude', lastReport.longitude);
+      submitData.append('severity', 'critical');
+      submitData.append('isSOSAlert', true);
+      submitData.append('timestamp', new Date().toISOString());
+
+      const response = await fetch(`${BASE_URL}/sos`, { method: "POST", body: submitData });
+      if (!response.ok) { throw new Error("Failed to send SOS alert"); }
+      const result = await response.json();
+      console.log("SOS Alert sent:", result);
+      alert("SOS Alert sent successfully! Emergency responders have been notified.");
+    } catch (error) {
+      console.error("Error sending SOS:", error);
+      alert("Error sending SOS alert. Please try again or contact emergency services directly.");
+    }
+  };
 
   const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            resolve({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy,
-              timestamp: new Date().toISOString()
-            });
-          },
-          (error) => {
-            reject(error);
-          },
+            resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy, timestamp: new Date().toISOString() });
+          }, (error) => { reject(error); },
           { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
         );
-      } else {
-        reject(new Error('Geolocation not supported'));
-      }
+      } else { reject(new Error('Geolocation not supported')); }
     });
   };
 
   const handleSOSClick = async () => {
     if (!enabled) {
-      alert('Please submit a disaster report first to enable the SOS function.');
-      return;
-    }
+      alert('Please submit a disaster report first to enable the SOS function.'); return; }
 
     try {
       const location = await getCurrentLocation();
@@ -93,20 +103,14 @@ const SOSButton = ({ enabled, onSOSActivate, lastReport }) => {
   };
 
   const handlePhoneCall = (phoneNumber, serviceName) => {
-    // For mobile devices, this will open the phone app
-    // For desktop, it will show a confirmation dialog
     if (navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)) {
-      // Mobile device - directly initiate call
       window.location.href = `tel:${phoneNumber}`;
     } else {
-      // Desktop device - show confirmation
       if (confirm(`Call ${serviceName} at ${phoneNumber}?`)) {
         window.location.href = `tel:${phoneNumber}`;
       }
     }
   };
-
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (countdownRef.current) {

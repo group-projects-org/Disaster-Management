@@ -1,4 +1,4 @@
-import re
+import re, joblib
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -8,27 +8,12 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.metrics import accuracy_score, classification_report
-import joblib
+from utils import clean_series
 
 # Paths
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # disaster-management/
-DATA_PATH = BASE_DIR / "backend" / "data" / "raw" / "train.csv"
-MODEL_PATH = BASE_DIR / "ai-ml" / "models" / "disaster_tweet_model.joblib"
-
-# Text cleaning function
-def clean_text(s: str) -> str:
-    if not isinstance(s, str):
-        return ""
-    s = s.lower()
-    s = re.sub(r"http\S+|www\.\S+", " ", s)  # Remove URLs
-    s = re.sub(r"@\w+", " ", s)              # Remove @mentions
-    s = re.sub(r"#", " ", s)                 # Remove hashtag symbol
-    s = re.sub(r"[^a-z\s]", " ", s)          # Keep only letters
-    s = re.sub(r"\s+", " ", s).strip()       # Remove extra spaces
-    return s
-
-def clean_series(texts):
-    return np.array([clean_text(t) for t in texts])
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent  # disaster-management/
+DATA_PATH = BASE_DIR / "dependencies" / "raw-data" / "train.csv"
+MODEL_PATH = BASE_DIR / "backend" / "AI_ML" / "models" / "disaster_tweet_model.joblib"
 
 # Main training process
 def main():
