@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form
 from datetime import datetime
 from backend.models import SOSAlert
-from backend.database import reports_collection
+from backend.database import sos_alerts_collection
 from bson import ObjectId
 
 router = APIRouter()
@@ -41,7 +41,7 @@ async def sos_alert(
         "timestamp": timestamp
     }
 
-    result = await reports_collection.insert_one(data)
+    result = await sos_alerts_collection.insert_one(data)
 
     return {
         "message": "SOS alert received",

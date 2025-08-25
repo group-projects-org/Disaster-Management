@@ -2,26 +2,28 @@ import { useState, useEffect, useRef } from 'react';
 import { AlertTriangle, MapPin, Phone } from 'lucide-react';
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const SOSButton = ({ enabled, lastReport }) => {
+const SOSButton = ({ lastReport }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [isAutoSending, setIsAutoSending] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const countdownRef = useRef(null);
 
-  const onSOSActivate = async () => {
+  const onSOSActivate = async (data = {}) => {
     try {
       const submitData = new FormData();
-      submitData.append('reporter', lastReport.reporter);
-      submitData.append('text', lastReport.message);
-      submitData.append('latitude', lastReport.latitude);
-      submitData.append('longitude', lastReport.longitude);
+
+      submitData.append('reporter', lastReport?.reporter || 'Anonymous');
+      submitData.append('text', lastReport?.message || 'Emergency alert - No prior report.');
+      submitData.append('latitude', data?.latitude || currentLocation?.latitude || '');
+      submitData.append('longitude', data?.longitude || currentLocation?.longitude || '');
       submitData.append('severity', 'critical');
       submitData.append('isSOSAlert', true);
       submitData.append('timestamp', new Date().toISOString());
 
       const response = await fetch(`${BASE_URL}/sos`, { method: "POST", body: submitData });
-      if (!response.ok) { throw new Error("Failed to send SOS alert"); }
+      if (!response.ok) throw new Error("Failed to send SOS alert");
+
       const result = await response.json();
       console.log("SOS Alert sent:", result);
       alert("SOS Alert sent successfully! Emergency responders have been notified.");
@@ -35,25 +37,26 @@ const SOSButton = ({ enabled, lastReport }) => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            resolve({ latitude: position.coords.latitude, longitude: position.coords.longitude, accuracy: position.coords.accuracy, timestamp: new Date().toISOString() });
-          }, (error) => { reject(error); },
+          (position) => resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            timestamp: new Date().toISOString()
+          }),
+          (error) => reject(error),
           { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
         );
-      } else { reject(new Error('Geolocation not supported')); }
+      } else reject(new Error('Geolocation not supported'));
     });
   };
 
   const handleSOSClick = async () => {
-    if (!enabled) {
-      alert('Please submit a disaster report first to enable the SOS function.'); return; }
-
     try {
       const location = await getCurrentLocation();
       setCurrentLocation(location);
     } catch (error) {
       console.warn('Could not get current location:', error);
-      if (lastReport && lastReport.latitude && lastReport.longitude) {
+      if (lastReport?.latitude && lastReport?.longitude) {
         setCurrentLocation({
           latitude: lastReport.latitude,
           longitude: lastReport.longitude,
@@ -87,7 +90,7 @@ const SOSButton = ({ enabled, lastReport }) => {
       currentLocation,
       autoSent: countdown === 0,
       emergencyType: 'SOS_ALERT',
-      message: ` EMERGENCY SOS ALERT - Immediate assistance needed! ${lastReport?.message || 'Emergency situation reported.'}`,
+      message: `EMERGENCY SOS ALERT - Immediate assistance needed! ${lastReport?.message || 'Emergency situation reported.'}`,
       severity: 'critical'
     };
 
@@ -103,33 +106,18 @@ const SOSButton = ({ enabled, lastReport }) => {
   };
 
   const handlePhoneCall = (phoneNumber, serviceName) => {
-    if (navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)) {
+    if (/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
       window.location.href = `tel:${phoneNumber}`;
-    } else {
-      if (confirm(`Call ${serviceName} at ${phoneNumber}?`)) {
-        window.location.href = `tel:${phoneNumber}`;
-      }
+    } else if (confirm(`Call ${serviceName} at ${phoneNumber}?`)) {
+      window.location.href = `tel:${phoneNumber}`;
     }
   };
+
   useEffect(() => {
     return () => {
-      if (countdownRef.current) {
-        clearInterval(countdownRef.current);
-      }
+      if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, []);
-
-  if (!enabled) {
-    return (
-      <div className="sos-button-container">
-        <button className="sos-button disabled" disabled>
-          <AlertTriangle className="sos-icon" />
-          <span className="sos-text">SOS</span>
-          <span className="sos-subtext">Submit report first</span>
-        </button>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -154,7 +142,7 @@ const SOSButton = ({ enabled, lastReport }) => {
             </div>
 
             <div className="sos-confirmation-content">
-              <p className="sos-confirmation-message">
+              <p>
                 Are you sure you want to send an emergency SOS alert? This will immediately notify emergency responders.
               </p>
 
@@ -172,14 +160,10 @@ const SOSButton = ({ enabled, lastReport }) => {
                   <MapPin className="location-icon" />
                   <div className="location-details">
                     <p><strong>Current Location:</strong></p>
-                    <p>Lat: {currentLocation.latitude.toFixed(6)}</p>
-                    <p>Lng: {currentLocation.longitude.toFixed(6)}</p>
-                    {currentLocation.accuracy && (
-                      <p className="location-accuracy">Accuracy: ±{Math.round(currentLocation.accuracy)}m</p>
-                    )}
-                    {currentLocation.fromLastReport && (
-                      <p className="location-note">Using last reported location</p>
-                    )}
+                    <p>Lat: {currentLocation.latitude?.toFixed(6)}</p>
+                    <p>Lng: {currentLocation.longitude?.toFixed(6)}</p>
+                    {currentLocation.accuracy && <p>Accuracy: ±{Math.round(currentLocation.accuracy)}m</p>}
+                    {currentLocation.fromLastReport && <p>Using last reported location</p>}
                   </div>
                 </div>
               )}
@@ -187,70 +171,27 @@ const SOSButton = ({ enabled, lastReport }) => {
               <div className="emergency-contacts">
                 <h4>In immediate danger? Call directly:</h4>
                 <div className="emergency-numbers">
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('911', 'Emergency Services')}
-                  >
-                    <Phone className="phone-icon" />
-                    911 - Emergency
-                  </button>
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('108', 'Ambulance Services')}
-                  >
-                    <Phone className="phone-icon" />
-                    108 - Ambulance (India)
-                  </button>
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('100', 'Police')}
-                  >
-                    <Phone className="phone-icon" />
-                    100 - Police
-                  </button>
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('101', 'Fire Department')}
-                  >
-                    <Phone className="phone-icon" />
-                    101 - Fire Department
-                  </button>
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('112', 'Emergency (EU)')}
-                  >
-                    <Phone className="phone-icon" />
-                    112 - Emergency (EU)
-                  </button>
-                  <button 
-                    className="emergency-call"
-                    onClick={() => handlePhoneCall('999', 'Emergency (UK)')}
-                  >
-                    <Phone className="phone-icon" />
-                    999 - Emergency (UK)
-                  </button>
+                  {[
+                    ['911', 'Emergency Services'],
+                    ['108', 'Ambulance (India)'],
+                    ['100', 'Police'],
+                    ['101', 'Fire Department'],
+                    ['112', 'Emergency (EU)'],
+                    ['999', 'Emergency (UK)']
+                  ].map(([num, name]) => (
+                    <button key={num} className="emergency-call" onClick={() => handlePhoneCall(num, name)}>
+                      <Phone className="phone-icon" /> {num} - {name}
+                    </button>
+                  ))}
                 </div>
-                <p className="emergency-note">
-                  <strong>Note:</strong> Click any number above to initiate an emergency call. 
-                  On mobile devices, this will open your phone app directly.
-                </p>
               </div>
             </div>
 
             <div className="sos-confirmation-actions">
-              <button 
-                className="sos-confirm-btn"
-                onClick={confirmSOS}
-              >
-                <AlertTriangle className="btn-icon" />
-                Send SOS Now
+              <button className="sos-confirm-btn" onClick={confirmSOS}>
+                <AlertTriangle className="btn-icon" /> Send SOS Now
               </button>
-              <button 
-                className="sos-cancel-btn"
-                onClick={cancelSOS}
-              >
-                Cancel
-              </button>
+              <button className="sos-cancel-btn" onClick={cancelSOS}>Cancel</button>
             </div>
           </div>
         </div>

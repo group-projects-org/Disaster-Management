@@ -5,6 +5,7 @@ import Reports from "./pages/Civilians/Reports";
 import Social from "./pages/Civilians/Social";
 import SOSDashboard from "./pages/Government/SOSDashboard";
 import SafeHouses from "./pages/Civilians/SafeHouses";
+import SOSButton from "./pages/Civilians/SOSButton";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/user/SOS" element={<Reports />} />
           <Route path="/user/Social" element={<Social />} />
           <Route path="/user/SafeHouses" element={<SafeHouses />} />
+          <Route path="/user/SOSButton" element={<SOSButton />} />
 
           <Route path="/govt" element={<SOSDashboard />} />
           

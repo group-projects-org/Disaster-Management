@@ -11,14 +11,11 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const Reports = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [sosEnabled, setSosEnabled] = useState(false);
   const [lastSubmittedReport, setLastSubmittedReport] = useState(null);
 
   const handleReportSubmitSuccess = (reportData) => {
     setLastSubmittedReport(reportData);
-    setSosEnabled(true);
     setSubmitSuccess(true);
-    setTimeout(() => setSubmitSuccess(false), 3000);
   };
 
   return (
@@ -28,6 +25,10 @@ const Reports = () => {
           <div className="reports-header">
               <h1 className="reports-title">Disaster Reports</h1>
               <p className="reports-subtitle">Submit and track disaster reports in your area</p>
+              <center><div className='Emg-Buttons' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px',  margin: '0', width: '100%', maxWidth: '350px'}}>
+                <SOSButton lastReport={lastSubmittedReport} />
+                <div className="emergency-button" onClick={() => window.open("tel:112")}> EMERGENCY CALL 112 </div>
+              </div> </center>
           </div>
           <ReportForm onSubmitSuccess={handleReportSubmitSuccess} />
           {submitSuccess && (
@@ -39,7 +40,6 @@ const Reports = () => {
               </div>
             </div>
           )} 
-          <SOSButton enabled={sosEnabled} lastReport={lastSubmittedReport} />
         </div>
     </>
   );
