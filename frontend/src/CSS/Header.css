@@ -21,6 +21,7 @@
   padding: 11px 28px;
   width: auto;
 }
+
 .hero-section {
   position: relative;
   overflow: hidden;
@@ -30,10 +31,12 @@
   background-repeat: no-repeat;
   height: 170px;
 }
+
 .hero-section.Home{
   height: 100vh;
   background-color: transparent;
 }
+
 .home-background {
   position: absolute;
   width: 100%;
@@ -41,6 +44,7 @@
   object-fit: cover;
   z-index: 0;
 }
+
 .Slogan{
   transform: translateY(100px);
   position: relative;

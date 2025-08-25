@@ -32,8 +32,9 @@ const Header = ({ section }) => {
           <div className="toast-message error" onClick={handleErrorClose}>{error}</div>
         </>
       )}
-      <div className={`hero-section ${curTab == "Home"? "Home" : ""}`}>
+      <div className={`hero-section ${curTab == "Home" || curTab == "Social" ? "Home" : ""}`}>
         {curTab == "Home" && (<img className="home-background" src={homeBackgrounds[count]} alt="Home Background" />)}
+        {curTab == "Social" && (<img className="home-background" src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?fit=crop&w=1500&q=80" alt="Home Background" />)}
         <div className="header">
           <img className="logo" src={logo} alt="App Logo" />
           <div className="right-section">
@@ -48,6 +49,9 @@ const Header = ({ section }) => {
         <p className="Slogan" style={{ color: "#ED0707", fontSize: "90px", lineHeight: "1", marginBottom: "15px" }}>THE SUFFERING</p>
         <p className="Slogan" style={{ fontFamily: "DM Sans", fontSize: "18px", margin: "10px 36px", marginTop: "30px" }}>We don't ask for much, just be there when it</p>
         <p className="Slogan" style={{ fontFamily: "DM Sans", fontSize: "18px", margin: "10px 36px" }}>matters most - Your Aid, Skill or Time</p></>)}
+        {curTab == "Social" && (<><p className="Slogan" style={{ fontSize: "90px" }}>Engage With Us</p>
+        <p className="Slogan" style={{ fontFamily: "DM Sans", fontSize: "18px", margin: "10px 36px", marginTop: "20px" }}>Together we respond, rescue, and rebuild communities in times of crisis</p>
+        </>)}
       </div>
     </div>
   );
