@@ -37,3 +37,17 @@ async def sos_alert(reporter: str | None = Form(None), latitude: float | None = 
         "id": str(result.inserted_id),
         "data": {**data, "_id": str(result.inserted_id)}
     }
+
+@router.get("/sos")
+async def get_sos_alerts():
+
+    # cutoff_date = datetime.utcnow() - timedelta(days=15)
+
+    # alerts_cursor = reports_collection.find(
+    #     {"timestamp": {"$gte": cutoff_date}}
+    # )
+    alerts_cursor = reports_collection.find({})
+
+
+    alerts = await alerts_cursor.to_list(length=None)
+    return {"count": len(alerts), "data": alerts}
