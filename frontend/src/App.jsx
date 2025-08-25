@@ -4,6 +4,7 @@ import WeatherApp from "./pages/Civilians/Weather";
 import Reports from "./pages/Civilians/Reports";
 import Social from "./pages/Civilians/Social";
 import SOSDashboard from "./pages/Government/SOSDashboard";
+import SafeHouses from "./pages/Civilians/SafeHouses";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/user/Weather" element={<WeatherApp />} />
           <Route path="/user/SOS" element={<Reports />} />
           <Route path="/user/Social" element={<Social />} />
+          <Route path="/user/SafeHouses" element={<SafeHouses />} />
 
           <Route path="/govt" element={<SOSDashboard />} />
           

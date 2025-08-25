@@ -39,7 +39,7 @@ const Header = ({ section }) => {
           <img className="logo" src={logo} alt="App Logo" />
           <div className="right-section">
             <nav className="navbar">
-              {["Home", "Weather", "SOS", "SafeHouses", "Medics", "Social"].map(tab => (
+              {["Home", "Weather", "SOS", "SafeHouses", "Social"].map(tab => (
                 <a key={tab} className={curTab === tab ? "active" : ""} href={`/user/${tab == "Home"? "" : tab}`} onClick={() => setCurTab(tab)} > {tab} </a>
               ))}
             </nav>

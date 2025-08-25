@@ -290,7 +290,7 @@ const Dashboard = () => {
           <div className="chart-card">
             <h3 className="chart-title">Recent Reports</h3>
             <div className="reports-list">
-              {recentReports.slice(0, 4).map((report) => (
+              {recentReports.slice(0, 2).map((report) => (
                 <div key={report.id} className="report-item">
                   <div className="report-content">
                     <div className="report-header">
