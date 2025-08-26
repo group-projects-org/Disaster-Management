@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form
 from datetime import datetime
 from backend.models import SOSAlert
-from backend.database import sos_alerts_collection
+from backend.database import sos_alerts_collection, reports_collection
 from bson import ObjectId
 
 router = APIRouter()

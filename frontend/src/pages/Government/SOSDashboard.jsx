@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./CSS/SOSDashboard.css";
 import SOSMap from "./SOSMap"; 
+import SOSSupply from "./SOSSupply"
 
 export default function GovtDashboard() {
   const [alerts, setAlerts] = useState([]);
@@ -153,7 +154,7 @@ export default function GovtDashboard() {
         return <SOSMap />;
 
       case "supplies":
-        return <p>Supplies page content here...</p>; // placeholder
+        return <SOSSupply />; // placeholder
 
       case "reports":
         return <p>Reports page content here...</p>; // placeholder
