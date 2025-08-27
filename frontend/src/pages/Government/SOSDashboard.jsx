@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./CSS/SOSDashboard.css";
 import SOSMap from "./SOSMap"; 
 import SOSSupply from "./SOSSupply"
+import Activate from "./Activate"
 
 export default function GovtDashboard() {
   const [alerts, setAlerts] = useState([]);
@@ -24,7 +25,7 @@ export default function GovtDashboard() {
 
   useEffect(() => {
     fetchAlerts();
-    const interval = setInterval(fetchAlerts, 10000); // auto-refresh every 10 sec
+    const interval = setInterval(fetchAlerts, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -157,7 +158,7 @@ export default function GovtDashboard() {
         return <SOSSupply />; // placeholder
 
       case "reports":
-        return <p>Reports page content here...</p>; // placeholder
+        return <Activate />
 
       default:
         return null;
@@ -209,7 +210,7 @@ export default function GovtDashboard() {
             className={`govt-nav-item ${activeNav === "reports" ? "active" : ""}`}
             onClick={() => handleNavClick("reports")}
           >
-            Reports
+            Activate Alert
           </button>
         </div>
       </div>
