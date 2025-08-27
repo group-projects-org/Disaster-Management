@@ -1,3 +1,4 @@
+import sys, subprocess
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -7,6 +8,7 @@ from backend.routes import report, sos
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     load_model()
+    subprocess.Popen([sys.executable, "backend/ML/disaster_response_api.py"])
     yield
     print("🛑 Application shutting down")
 
