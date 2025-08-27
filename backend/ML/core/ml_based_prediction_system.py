@@ -63,7 +63,7 @@ class MLBasedDisasterPredictionSystem:
             'Mussoorie': 'Dehradun'
         }
         try:
-            csv_path = Path('data/processed/city_to_district.csv')
+            csv_path = Path('backend/ML/data/processed/city_to_district.csv')
             if csv_path.exists():
                 df = pd.read_csv(csv_path)
                 for _, row in df.iterrows():
@@ -78,7 +78,7 @@ class MLBasedDisasterPredictionSystem:
     def _load_district_populations(self):
         """Load district populations from CSV."""
         try:
-            csv_path = Path('data/processed/district_population.csv')
+            csv_path = Path('backend/ML/data/processed/district_population.csv')
             df = pd.read_csv(csv_path)
             return {str(r['district']).strip(): int(r['population']) for _, r in df.iterrows()}
         except Exception as e:
@@ -88,7 +88,7 @@ class MLBasedDisasterPredictionSystem:
     def _load_disaster_impact_factors(self):
         """Load impact presets from CSV."""
         try:
-            csv_path = Path('data/processed/disaster_impact_factors.csv')
+            csv_path = Path('backend/ML/data/processed/disaster_impact_factors.csv')
             df = pd.read_csv(csv_path)
             factors = {}
             for _, r in df.iterrows():
