@@ -6,6 +6,7 @@ import Social from "./pages/Civilians/Social";
 import SOSDashboardOffline from "./pages/Government/SOSDashboard";
 import SafeHouses from "./pages/Civilians/SafeHouses";
 import SOSButton from "./pages/Civilians/SOSButton";
+import RescueAgenciesPortal from "./pages/RescueAgencies/RescueAgenciesPortal";
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
           <Route path="/user/Emergency" element={<SOSButton />} />
 
           <Route path="/govt" element={<SOSDashboardOffline />} />
+          <Route path="/govt/reports" element={<SOSDashboardOffline />} />
+          
+          <Route path="/rescue" element={<RescueAgenciesPortal />} />
           
           {/* Catch-all for unknown routes */}
           <Route path="*" element={<Navigate to="/user" />} />

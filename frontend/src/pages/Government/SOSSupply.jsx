@@ -45,7 +45,7 @@ export default function SOSSupply() {
   });
 
   // API Base URL
-  const API_BASE = "http://localhost:5002";
+  const API_BASE = "http://localhost:8000";
   const WEATHER_API_KEY = "210d5062b95c6d926279c92dbf27770b"; 
   const WEATHER_API_BASE = "https://api.openweathermap.org/data/2.5";
 
@@ -155,7 +155,7 @@ export default function SOSSupply() {
 
   const calculateResources = () => {
     // Use predicted population if available, otherwise use form input
-    const affectedPopulation = populationData?.prediction?.predicted_affected_population || 
+    const affectedPopulation = populationData?.predicted_population || 
                               parseInt(resourceForm.affected_population);
     
     const payload = {
@@ -226,8 +226,8 @@ export default function SOSSupply() {
 
   // Auto-update resource form when population prediction is available
   useEffect(() => {
-    if (populationData?.prediction?.predicted_affected_population) {
-      const predictedPopulation = populationData.prediction.predicted_affected_population;
+    if (populationData?.predicted_population) {
+      const predictedPopulation = populationData.predicted_population;
       setResourceForm(prev => ({
         ...prev,
         affected_population: predictedPopulation
@@ -345,25 +345,34 @@ export default function SOSSupply() {
             <div className="result-card">
               <h4>Predicted Affected Population</h4>
               <div className="result-value">
-                {populationData.prediction?.predicted_affected_population?.toLocaleString() || 'N/A'}
+                {populationData.predicted_population?.toLocaleString() || 'N/A'}
               </div>
             </div>
             <div className="result-card">
               <h4>Location</h4>
-              <div className="result-value">{populationData.prediction?.location || 'N/A'}</div>
+              <div className="result-value">
+                {populationData.factors?.coordinates ? 
+                  `Lat: ${populationData.factors.coordinates.latitude}, Long: ${populationData.factors.coordinates.longitude}` : 
+                  'N/A'
+                }
+              </div>
             </div>
             <div className="result-card">
               <h4>Disaster Type</h4>
-              <div className="result-value">{populationData.prediction?.disaster_type?.replace('_', ' ').toUpperCase() || 'N/A'}</div>
+              <div className="result-value">
+                {disasterForm.disaster_type?.replace('_', ' ').toUpperCase() || 'N/A'}
+              </div>
             </div>
             <div className="result-card">
               <h4>ML Confidence</h4>
-              <div className="result-value">{populationData.prediction?.ml_confidence || 'N/A'}</div>
+              <div className="result-value">
+                {populationData.confidence_score ? `${(populationData.confidence_score * 100).toFixed(1)}%` : 'N/A'}
+              </div>
             </div>
           </div>
           <div className="weather-factors">
             <h4>Weather Factors Applied</h4>
-            <pre>{JSON.stringify(populationData.prediction?.weather_factors_applied || {}, null, 2)}</pre>
+            <pre>{JSON.stringify(populationData.factors || {}, null, 2)}</pre>
           </div>
         </div>
       )}
@@ -375,16 +384,16 @@ export default function SOSSupply() {
       <div className="supply-form-section">
         <h3>Resource Calculation Parameters</h3>
         
-        {/* Population Info */}
-        {populationData?.prediction?.predicted_affected_population && (
-          <div className="population-info">
-            <h4>👥 Population Data </h4>
-            <div className="info-item">
-              <span className="info-label">Predicted Affected Population:</span>
-              <span className="info-value">{populationData.prediction.predicted_affected_population.toLocaleString()}</span>
-            </div>
-          </div>
-        )}
+                 {/* Population Info */}
+         {populationData?.predicted_population && (
+           <div className="population-info">
+             <h4>👥 Population Data </h4>
+             <div className="info-item">
+               <span className="info-label">Predicted Affected Population:</span>
+               <span className="info-value">{populationData.predicted_population.toLocaleString()}</span>
+             </div>
+           </div>
+         )}
 
         <div className="form-grid">
           <div className="form-group">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { AlertTriangle, MapPin, Phone } from 'lucide-react';
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const SOSButton = ({ lastReport }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -11,6 +11,17 @@ const SOSButton = ({ lastReport }) => {
 
   const onSOSActivate = async (data = {}) => {
     try {
+      // Check if backend server is accessible
+      try {
+        const healthCheck = await fetch(`${BASE_URL}/health`, { method: "GET" });
+        if (!healthCheck.ok) {
+          throw new Error("Backend server is not responding");
+        }
+      } catch (healthError) {
+        console.warn("Backend health check failed:", healthError);
+        // Continue anyway, but log the warning
+      }
+
       const submitData = new FormData();
 
       submitData.append('reporter', lastReport?.reporter || 'Anonymous');
@@ -29,7 +40,18 @@ const SOSButton = ({ lastReport }) => {
       alert("SOS Alert sent successfully! Emergency responders have been notified.");
     } catch (error) {
       console.error("Error sending SOS:", error);
-      alert("Error sending SOS alert. Please try again or contact emergency services directly.");
+      
+      // Provide more specific error messages
+      let errorMessage = "Error sending SOS alert. ";
+      if (error.message.includes("Failed to fetch")) {
+        errorMessage += "Server is not responding. Please check your internet connection.";
+      } else if (error.message.includes("Failed to send SOS alert")) {
+        errorMessage += "Server error. Please try again.";
+      } else {
+        errorMessage += "Please try again or contact emergency services directly.";
+      }
+      
+      alert(errorMessage);
     }
   };
 

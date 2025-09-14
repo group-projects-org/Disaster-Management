@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import { AlertTriangle, Clock, TrendingUp, RefreshCw } from 'lucide-react';
 import './../../CSS/Dashboard.css';
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({});

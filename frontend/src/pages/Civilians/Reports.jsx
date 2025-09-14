@@ -7,7 +7,7 @@ import './CSS/Reports.css';
 import './CSS/ReportForm.css';
 import './CSS/SOSButton.css';
 import './CSS/SuccessMessage.css';
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const Reports = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);

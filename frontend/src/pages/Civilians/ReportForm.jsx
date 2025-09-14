@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Camera, MapPin, AlertTriangle, User, MessageSquare, Send, X } from 'lucide-react';
 import LocationPicker from '../../components/Civilians/LocationPicker';
 import VoiceRecorder from '../../components/Civilians/VoiceRecorder';
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const ReportForm = ({ onSubmitSuccess }) => {
   const [formData, setFormData] = useState({ reporter: '', message: '', latitude: '', longitude: '', severity: 'medium', disasterType: 'other' });
